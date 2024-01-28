@@ -1,0 +1,343 @@
+/*
+ * Hailey Martin
+ * CS1450 Section 001 T/R
+ * Assignment #2
+ * Due Date: 01/02/23
+ * Description:
+ * This program will review objects, inheritance and 
+ * polymorphism. The code will create a hierarchy of
+ * a superclass: Disaster and four subclasses:
+ * Earthquake, Hurricane, Tornado, and Volcano.
+ * Actions will include reading from file, creating
+ * a polymorphic array, creating objects and using
+ * methods.
+ */
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class MartinHaileyAssignment2 {
+
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+
+		//Task #1 open and read file
+
+		final String FILE_NAME = "Disasters.txt";
+		
+		File inputFileName = new File(FILE_NAME);
+		Scanner inputFile = new Scanner(inputFileName);
+
+		//Task#2 create a polymorphic array to store disasters, read file,
+		//the first value in file is array length
+		
+		final int NUM_DISASTERS = inputFile.nextInt();
+		
+		//create an polymorphic array to store the number of disasters read from file
+		Disaster[] naturalDisasters = new Disaster[NUM_DISASTERS];
+
+		//read file for type, year, strength, name
+		for (int i = 0; i < naturalDisasters.length; i++) {
+
+			String type = inputFile.next();
+			int year = inputFile.nextInt();
+			double strength = inputFile.nextDouble();
+			String name = inputFile.nextLine();
+			
+			//Task#3 for each line in the file read type, year, strength and name. Create
+			//a specific disaster object to be placed into the polymorphic array
+			
+			switch (type) {
+			  case "tornado":
+				  naturalDisasters[i] = new Tornado(name.trim(), year, strength);
+				break;
+			  case "earthquake":
+				  naturalDisasters[i] = new Earthquake(name.trim(), year, strength);
+				break;
+			  case "hurricane":
+				  naturalDisasters[i] = new Hurricane(name.trim(), year, strength);
+				break;
+			  case "volcano":
+				  naturalDisasters[i]= new Volcano(name.trim(), year, strength);
+				break;
+			}//end switch
+		}//end loop	
+		
+		//Task#4 Display the disasters array's name, type, year, strength, and rating in a table
+		
+		System.out.println("Disaster Name		Type		Year"
+				+ "		Strength	RatingScale" +
+				"\n----------------------------------------------"
+				+ "----------------------------------------------");
+
+	
+		for(int i=0; i<naturalDisasters.length; i++) {
+			System.out.printf(naturalDisasters[i].getName()+ "      	" +
+					naturalDisasters[i].getType() + "		" + 
+					naturalDisasters[i].getYear() + "		" +
+					naturalDisasters[i].getStrength() + "		" + 
+					naturalDisasters[i].ratingScale()+ "\n");
+			
+		}
+		
+		//Task#5 Create storm object, find storms with strength of 5, use findStorms method
+		//and send it the disasters array and a strength of 5. Use printStormDetails to display
+		//storm details
+		
+		Storms storm1 = new Storms();
+		
+		//passing disasters array and strength = 5
+		storm1.findStorms(naturalDisasters, 5);
+
+		storm1.printStormDetails();
+		
+		inputFile.close();
+	}//end of main method
+
+
+}//end of class
+
+class Disaster {
+	private String name;
+	private String type;
+	private int year;
+	private double strength;
+	
+	/*************************************
+	 * Disaster constructor
+	 * Parameters: String type, String 
+	 * name, int year, double strength
+	 * Return: N/A
+	*************************************/
+	public Disaster(String type, String name,
+		int year, double strength) {
+		this.type =type;
+		this.name = name;
+		this.year = year;
+		this.strength =strength;
+	}
+	
+	/*************************************
+	 * getName
+	 * Parameters: N/A
+	 * Return: String name
+	*************************************/
+	public String getName() {
+		return name;
+	}
+	
+	/*************************************
+	 * getType
+	 * Parameters: N/A
+	 * Return: String type
+	*************************************/
+	public String getType() {
+		return type;
+	}
+	
+	/*************************************
+	 * getYear
+	 * Parameters: N/A
+	 * Return: year
+	*************************************/
+	public int getYear() {
+		return year;
+	}
+	
+	/*************************************
+	 * getStrength
+	 * Parameters: N/A
+	 * Return: strength
+	*************************************/
+	public double getStrength() {
+		return strength;
+	}
+	
+	/*************************************
+	 * ratingScale
+	 * Parameters: N/A
+	 * Return: Print statement
+	*************************************/
+	public String ratingScale() {
+		return "ratingScale";
+	}
+	
+}//end of disaster class
+
+class Earthquake extends Disaster{
+	
+	/*************************************
+	 * Earthquake constructor
+	 * Parameters: String name, int year, 
+	 * double strength
+	 * Return: N/A
+	*************************************/
+	public Earthquake(String name, int year, 
+			double strength) {
+		super("Earthquake", name, year, strength);
+	}
+	
+	/*************************************
+	 * ratingScale
+	 * Parameters: N/A
+	 * Return: "Richter Scale: 1.0 to 9.0 
+	 * or greater"
+	*************************************/
+	@Override
+	public String ratingScale() {
+		return "Richter Scale: 1.0 to 9.0 or greater";
+		
+	}
+}//end of Earthquake class
+
+class Hurricane extends Disaster{
+	
+	/*************************************
+	 * Hurricane constructor
+	 * Parameters: String name, int year, 
+	 * double strength
+	 * Return: N/A
+	*************************************/
+	public Hurricane(String name, int year, 
+			double strength) {
+		super("Hurricane", name, year, strength);
+	}
+	
+	/*************************************
+	 * ratingScale
+	 * Parameters: N/A
+	 * Return: "Saffir-Simpson Wind Scale:
+	 * 1 to 5"
+	*************************************/
+	@Override
+	public String ratingScale() {
+		return "Saffir-Simpson Wind Scale: 1 to 5";
+	}
+	
+}//end of Hurricane class
+
+class Tornado extends Disaster{
+	
+	/*************************************
+	 * Tornado constructor
+	 * Parameters: String name, int year, 
+	 * double strength
+	 * Return: "Fujita Scale: F0 to F5"
+	*************************************/
+	public Tornado(String name, int year, 
+			double strength) {
+		super("Tornado", name, year, strength);
+	}
+	
+	@Override
+	public String ratingScale() {
+		return "Fujita Scale: F0 to F5";
+	}
+}//end of Tornado class
+
+class Volcano extends Disaster{
+	
+	/*************************************
+	 * Volcano constructor
+	 * Parameters: String name, int year, 
+	 * double strength
+	 * Return: N/A
+	*************************************/
+	public Volcano(String name, int year, 
+			double strength) {
+		super("Volcano", name, year, strength);
+	}
+	
+	/*************************************
+	 * ratingScale
+	 * Parameters: N/A
+	 * Return: "Volcanic Explosivity 
+	 * Index: 0 to 8"
+	*************************************/
+	@Override
+	public String ratingScale() {
+		return "Volcanic Explosivity Index: 0 to 8";
+	}
+	
+}//end of Volcano class
+
+class Storms /*extends Disaster*/{
+	
+	private int numTornados =0;
+	private int numHurricanes =0;
+	private Disaster[] storms;
+	
+	/*************************************
+	 * Storms constructor
+	 * Parameters: N/A
+	 * Return: N/A
+	*************************************/
+	public Storms() {
+		
+	}
+	
+	/*************************************
+	 * findStorms
+	 * Parameters: Disaster[] disasters, 
+	 * double strength
+	 * Return: N/A
+	*************************************/
+	public void findStorms(Disaster[] disasters, double strength) {
+		int count= 0;
+		int arraySize =0;
+		
+		//loop through disasters array and check if each element is
+		//an instanceof Tornado or Hurricane and if there strength
+		// is greater than or equal to incoming strength
+		for(int i=0; i<disasters.length; i++) {
+			if((disasters[i] instanceof Tornado) && (disasters[i].getStrength() >= 5)) {
+				//if array element is a instanceof Tornado increment
+				//numTornados
+				numTornados++;
+			}else if((disasters[i] instanceof Hurricane) && (disasters[i].getStrength() >= 5)) {
+				//else if array element is a instanceof Tornado increment
+				//numHurricanes
+				numHurricanes++;
+			}
+			arraySize= numTornados + numHurricanes;
+		}
+		
+		//set storms array to the size of arraySize (calculated above)
+		storms= new Disaster[arraySize];
+		
+		//loop disasters array and pass-by-reference the elements that
+		//are instances of Tornado and Hurricane with strength greater
+		//than or equal to strength of 5
+		for(int i=0; i<disasters.length; i++) {
+			if((disasters[i] instanceof Tornado) && (disasters[i].getStrength() >= strength)) {
+				storms[count] = disasters[i];
+				count++;
+			}else if((disasters[i] instanceof Hurricane) && (disasters[i].getStrength() >= strength)) {
+				storms[count] = disasters[i];
+				count ++;
+			}
+		}
+			
+	}
+	
+	/*************************************
+	 * printStormDetails
+	 * Parameters: N/A
+	 * Return: Print Statement
+	*************************************/
+	public void printStormDetails() {
+		System.out.printf("\nDisasters that are Storms \n"
+				+ "--------------------------\n");
+		System.out.printf("Number of tornados: %d", numTornados);
+		System.out.printf("\nNumber of tornados: %d\n", numHurricanes);
+		
+		for(int i=0; i<storms.length; i++) {
+			System.out.println("\n");
+			System.out.printf(storms[i].getName()+ "  ");
+			System.out.printf("---" + storms[i].getType()+ "  ");
+			System.out.printf("---" + storms[i].getStrength()+ "  ");
+		}
+		
+	}
+}//end of storms class
