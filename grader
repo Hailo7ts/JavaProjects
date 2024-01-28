@@ -1,0 +1,84 @@
+/* Name: Hailey Martin
+ * Class name: CS1150
+ * Section: M/W
+ * Due date: 08/31/22
+ * Description: HW02
+ * This program will grade students
+ */
+
+import java.util.Scanner;
+public class MartinHaileyHW02 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner input = new Scanner(System.in);
+		
+		//ask professor for category grades for each student
+		System.out.println("What is the grade for guided exploration?: ");
+		
+		double ge = input.nextDouble();	
+		
+		//ask professor for category grades for each student
+		System.out.println("What is the grade for homework?: ");
+				
+		double hw = input.nextDouble();
+				
+		//ask professor for category grades for each student
+		System.out.println("What is the grade for quiz?: ");
+	
+		double qz = input.nextDouble();
+				
+		//ask professor for category grades for each student
+		System.out.println("What is the grade for midterm?: ");
+				
+		double mid = input.nextDouble();
+		
+		//ask professor for category grades for each student
+		System.out.println("What is the grade for final?: ");
+				
+		double finals = input.nextDouble();
+		
+		//check ge
+		if(ge > 0 && ge < 100) {
+			//check homework
+			if(hw > 0 && hw<100) {
+				//check quiz
+				if(qz > 0 && qz < 100) {
+					//check mid
+					if(mid > 0 && mid < 100) {
+						//check final
+						if(finals > 0 && finals < 100) {
+							//run calculation if all variable are valid value
+							//final percentage
+							double finalPercentage = (ge*.15)+ (hw*.35)+ (qz*.1)+ (mid*.2)+ (finals*.2);
+							
+							//output finalPecentage
+							System.out.println("Your final percent is " +finalPercentage);
+							
+							
+							//output letter grade
+							if(finalPercentage >= 90) {
+								System.out.println("Your grade is an A");
+							}else if(finalPercentage < 90 && finalPercentage >= 80) {
+								System.out.println("Your grade is a B");
+							}else if(finalPercentage < 80 && finalPercentage >= 70) {
+								System.out.println("Your grade is a C");
+							}else if(finalPercentage < 70 && finalPercentage >= 60) {
+								System.out.println("Your grade is a D");
+							}else {
+								System.out.println("Your grade is a F");
+							}
+						}
+					}
+				}
+			}
+		}else {
+			System.out.println("Error");
+		}
+		
+		
+		
+		input.close();
+	}//end of main
+
+}
