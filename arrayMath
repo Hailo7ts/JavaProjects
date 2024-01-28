@@ -1,0 +1,177 @@
+import java.util.Arrays;
+
+public class MartinHaileyHW07 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		final int TOTAL_RESPONSES = 9;
+		final int RATING_MIN = 0;
+		final int RATING_MAX = 5;
+		int[] results  = new int[TOTAL_RESPONSES];
+		double arrayMean = 0;
+		double arrayMedian = 0;
+
+		System.out.println(TOTAL_RESPONSES +" people took the survey\r\n"
+				+ "The ratings were from 0 to 5\r\n");
+		
+		fillArray(results, RATING_MIN, RATING_MAX);
+		
+		System.out.println("******* Survey Results **********");
+		displayArray(results);
+		
+		arrayMean = calculateMean(results);
+		System.out.printf("\nThe survey average is %.1f \n", arrayMean);
+		
+		int[] sortedResults = new int[TOTAL_RESPONSES];
+		//copy results array to sorted array
+		for (int i = 0; i < results.length; i++) {
+			sortedResults[i] = results[i];
+		}
+		
+		sortedResults = createSortedArray(results);
+		
+		System.out.println("\n******* Sorted Survey Results **********");
+		displayArray(sortedResults);
+		
+		arrayMedian = calculateMedian(sortedResults);
+		System.out.printf("\nThe survey median is %.1f\n", arrayMedian);
+		
+		
+		int[] frequency = new int[results.length];
+		
+		
+		fillFrequencyArray(sortedResults, frequency);
+	
+		displayFrequency(frequency, RATING_MIN, RATING_MAX);
+		
+		
+		
+		
+	}//end of main
+	
+	
+	
+	//Fill an array with random survey results.
+
+	public static void fillArray(int numbers[], int min, int max) {
+		for (int i = 0; i < numbers.length; i++) {
+			numbers[i] += (int)(Math.random()*(max-min + 1)+ min);
+			//System.out.println(number[i]);
+		}
+		
+		
+
+	}
+	
+	//display array
+	
+	public static void displayArray(int numbers[]) {
+		
+		for (int i = 0; i < numbers.length; i++) {
+			
+			System.out.printf("results[%d] = %d \n",i, numbers[i]);
+		}
+	}
+	
+	
+	
+	
+	//mean  
+	
+	
+	public static double calculateMean(int numbers[]) {
+		double mean = 0;
+		double sum = 0;
+		for (int i = 0; i < numbers.length; i++) {
+			sum = sum + numbers[i];
+			
+		}
+		mean = sum / numbers.length;
+		return mean;
+	}
+	
+	
+	//sort array
+	
+	public static int[] createSortedArray (int [] numbers) {
+		int [] sortedArray = new int [numbers.length];
+		
+		for (int i = 0; i < numbers.length; i++) {
+			sortedArray[i] = numbers[i];			
+		}
+		for (int i=0 ; i < numbers.length; i++) {
+			Arrays.sort(sortedArray);
+		}
+	return sortedArray;
+	}
+	
+	//median
+	
+	public static double calculateMedian(int numbers[]) {
+		double median = 0;
+			if(numbers.length %2 == 0) {
+				median = ((numbers[(numbers.length-1)/2]) + (numbers[(numbers.length-1)/2]))/2;
+				//median = median /2;
+				
+			}else {
+				median = numbers[(numbers.length-1)/2];
+			}
+		
+		return median;
+		
+	}
+	
+	
+	//frequency
+	
+	public static void fillFrequencyArray(int numbers[], int freq[]) {
+		int visited = -1;
+		
+		for(int i = 0; i <numbers.length; i++) {
+			int count = 1;
+			for(int j = i+1; j < numbers.length; j++) {
+				if(numbers[i] == numbers[j]) {
+					count++;
+					
+					//this avoids counting the same thing again
+					freq[j] = visited;
+				}
+			}
+			if(freq[i] != visited) {
+				freq[i] = count;
+			}
+		}
+		
+		
+		
+		//display
+		for(int i=0; i < freq.length; i++) {
+			if(freq[i] != visited) {
+				System.out.println("Frequency of " +numbers[i]+ " : " +freq[i]);
+			}
+		}
+		System.out.println("\n");
+	}
+	
+	public static void displayFrequency(int freq[], int min, int max) {
+			
+		
+		for(int i=min; i < freq.length; i++) {
+			
+			if(freq[i] != -1) {
+				
+				System.out.println("Frequency of " + min + " : " +freq[i]);
+				min++;
+				
+			}
+		}
+			
+		
+		
+	
+	
+	}
+	
+	
+	}//end of class
