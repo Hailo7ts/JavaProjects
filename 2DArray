@@ -1,0 +1,120 @@
+/*
+* Hailey Martin
+* CS1450 Section 001 T/R
+* Assignment #1
+* Due Date: 01/26/23
+* Description:
+* This program will manipulate arrays by filling them with
+* random values and performing operations (sum, average
+* median, finding largest value, and the number of times
+* the largest value occurs in the array)on the array. The 
+* 1D array values will also be placed into a 2D array. This 
+* program will also read and write the 2D array to and from 
+* a file.
+*/
+ 
+import java.io.IOException;
+import java.util.Arrays;
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Scanner;
+ 
+public class MartinHaileyAssignment1 {
+ 
+public static void main(String[] args)throws IOException {
+// TODO Auto-generated method stub
+ 
+//Task #1 fill  array with 20 random integers between 10 and 40
+final int MAX = 40;
+final int MIN = 10;
+final int NUM_OF_INTS = 20;
+int [] array = new int [NUM_OF_INTS];
+//generate random integers to array
+for(int i=0; i<array.length; i++) {
+array[i] += (int)(Math.random()*(MAX-MIN + 1)+ MIN);
+System.out.println(array[i]);
+}
+//Task #2 calculate sum, average, median, largest value
+//and the number of times that value appears in the array
+//find average and sum
+double sum = 0;
+for(int i=0; i<array.length; i++) {
+sum += array[i];
+}
+double average = sum/ array.length;
+System.out.printf("\nSum = %.1f \nAverage = %.1f\n",sum, average);
+//find median
+//sort array
+for(int i= 0; i< array.length; i++) {
+Arrays.sort(array);
+}
+//if required output wanted the median to show as a double this equation could
+//be explicitly casted with double to give more accuracy
+int median = ((array[(array.length-1)/2]) + (array[(array.length+1)/2])) / 2;
+System.out.printf("Median = %d", median);
+//find largest value and how many times it occurs in the array
+int largestValue = 0;
+//check array for largest value
+for(int i=0; i<array.length; i++) {
+if(array[i]> largestValue) {
+largestValue = array[i];
+}
+}
+System.out.printf("\nLargest value = %d ",largestValue);
+int largestValueCount = 0;
+//check array for the number of times the largest value appears
+for(int i=0; i< array.length; i++) {
+if(array[i] == largestValue) {
+largestValueCount++;
+}
+}
+System.out.printf("which occured %d times\n", largestValueCount);
+System.out.println();
+//Task #3 put 1D array values into a 2D array
+final int NUM_ROWS = 4;
+final int NUM_COLS = 5;
+int[][] intArray = new int[NUM_ROWS][NUM_COLS];
+ 
+//insert values from 1D array to 2D array 
+int count =0;
+//loop through 2D array and assign 1D array value using count as array index
+for(int row=0; row<NUM_ROWS; row++) {
+for(int col=0; col<NUM_COLS; col++) {
+intArray[row][col] = array[count];
+count++;
+}
+}
+//display 2D array
+System.out.println("Values placed into 2D array");
+for(int row=0; row<NUM_ROWS; row++) {
+for(int col=0; col<NUM_COLS; col++) {
+System.out.print(intArray[row][col] + " ");
+}
+System.out.println();
+}
+//Task#4 create file, open file, write file,
+//close file and reopen to read file
+File fileName = new File("assignment1.txt");
+PrintWriter outputFile = new PrintWriter(fileName);
+//write 2D array to file
+for(int row=0; row<NUM_ROWS; row++) {
+for(int col=0; col<NUM_COLS; col++) {
+outputFile.write(intArray[row][col] +"\n");
+}
+}
+outputFile.close();
+Scanner readFile = new Scanner(fileName);
+System.out.println("\nRandom values stored in file in sorted order");
+//read and display file
+for(int row=0; row<NUM_ROWS; row++) {
+for(int col=0; col<NUM_COLS; col++) {
+System.out.print(readFile.next());
+System.out.println("");
+}
+}
+readFile.close();
+//where to find file
+System.out.println("\nFile is in directory: " + fileName.getAbsolutePath());
+}//end of main
+ 
+}
