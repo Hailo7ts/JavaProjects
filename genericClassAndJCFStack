@@ -1,0 +1,429 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.*;
+
+
+/*
+ * Hailey Martin
+ * CS1450 Section 001 T/R
+ * Assignment #5
+ * Due Date: 03/02/23
+ * Description:
+ * This program will implement and use a generic class and
+ * generic methods. It will also use JCF stack to place 
+ * values onto the stack, remove odd values without changing
+ * the order of the even values and display. This program
+ * will also fill a stack with values read from file and
+ * sort the stack by removing repeatedly the smallest 
+ * element. The stack will be organized with the smallest 
+ * value at the top in ascending order.
+ */
+
+
+public class MartinHaileyAssignment5 {
+
+
+public static <E> void main(String[] args) throws IOException {
+// TODO Auto-generated method stub
+
+
+//Part 1: Create a stack, remove odd values, and display
+//create array with set values
+int[]numbers =  {7, 2, 4, 3, 5, 1, 6, 8, 9};
+//create stack and place values from array into stack
+Stack<Integer> integerStack = new Stack<>();
+for(int i=0; i< numbers.length; i++) {
+integerStack.push(numbers[i]);
+}
+//sort values, remove all odd values from the stack and display
+//create a temporary stack to sort
+Stack<Integer> sort = new Stack<>();
+while(!integerStack.isEmpty()) {
+int popElement = integerStack.pop();
+//if sort element is less than the popElement push that
+//value to the int stack
+while(!sort.isEmpty() && sort.peek()< popElement) {
+integerStack.push(sort.pop());
+}
+//when sort is empty push elements to initial stack
+sort.push(popElement);
+}
+integerStack = sort;
+//void method arguments for stack
+removeOddValues(integerStack);
+System.out.println("Stack After Odd Values Are Removed\r\n"
++ "----------------------------------------------");
+printStack(integerStack);
+//Part 2 create a generic stack, fill, sort, and move a value
+//to the bottom: Integers
+GenericStack<Integer> myIntegers = new GenericStack<>();
+//value to determine in fillGenericStack if its filling a int stack
+//or filling a String stack
+int fileIsInt = 0;
+//void method arguments for stack and int
+fillGenericStack(myIntegers,fileIsInt);
+System.out.println("\nValues read from file and pushed onto number stack: \r\n"
++ "----------------------------------------------------");
+//void method arguments for stack
+printStack(myIntegers);
+//void method arguments for stack
+sortStack(myIntegers);
+System.out.println("\nNumber Stack sorted - smallest to highest: \r\n"
++ "----------------------------------------------");
+//void method arguments for stack
+printStack(myIntegers);
+Scanner input = new Scanner(System.in);
+int moveToBottomInt = 0;
+boolean foundValue = false;
+//Sentinel value
+boolean whileLoopExit = false;
+//loop will run until user enters in a value that is in the stack
+while(whileLoopExit != true) {
+System.out.println("\nEnter value to move to bottom of integer stack: ");
+moveToBottomInt = input.nextInt();
+//method returns a boolean, arguments for stack and input
+foundValue = moveToBottom(myIntegers, moveToBottomInt);
+if(foundValue == true) {
+whileLoopExit = true;
+}else {
+System.out.printf("\nThe value %d is not on the stack.", moveToBottomInt);
+}
+}
+ 
+System.out.printf("\nNumber Stack - move %d to bottom of stack: \r\n"
++ "------------------------------------\n",moveToBottomInt );
+//void method arguments for stack
+printStack(myIntegers);
+//Part 2 create a generic stack, fill, sort, and move a value
+//to the bottom: Strings
+GenericStack<String> myStrings = new GenericStack<>();
+//value to determine in fillGenericStack if its filling a int stack
+//or filling a String stack
+int fileIsStr = 1;
+//void method arguments for stack and String
+fillGenericStack(myStrings, fileIsStr);
+System.out.println("\nValues read from file and pushed onto string Stack: \r\n"
++ "-----------------------------------------------------");
+//void method arguments for stack
+printStack(myStrings);
+//void method arguments for stack
+sortStack(myStrings);
+System.out.println("\nString Stack sorted - alphabetical order: \r\n"
++ "----------------------------------------------");
+//void method arguments for stack
+printStack(myStrings);
+Scanner stringInput = new Scanner(System.in);
+String moveToBottomString = " ";
+foundValue = false;
+//Sentinel value
+whileLoopExit = false;
+//loop will run until user enters in a value that is in the stack
+while(whileLoopExit != true) {
+System.out.println("\nEnter value to move to bottom of string stack: ");
+moveToBottomString = input.next();
+//method returns a boolean, arguments for stack and input
+foundValue = moveToBottom(myStrings, moveToBottomString);
+if(foundValue == true) {
+whileLoopExit = true;
+}else {
+System.out.printf("\nThe value %s is not on the stack.", moveToBottomString);
+}
+}
+ 
+System.out.printf("\nNumber Stack - move %s to bottom of stack: \r\n"
++ "------------------------------------\n",moveToBottomString );
+//void method arguments for stack 
+printStack(myStrings);
+input.close();
+}//end main
+
+
+/*************************************
+* remove Odd Values
+* Parameters: stack
+* Return: N/A
+*************************************/
+public static void removeOddValues (Stack<Integer> stack) {
+Stack<Integer> evenValues = new Stack<>();
+/*
+* loop will run until stack is empty. It will peek at
+* the bottom of the stack, if it can be divided by two
+* with a 0 remainder it is an even and will be added
+* to even stack. Otherwise pop off the odd value
+*/
+while(!stack.isEmpty()) {
+int peekInt = stack.peek();
+if(peekInt%2 == 0) {
+evenValues.push(peekInt);
+stack.pop();
+}else { 
+stack.pop();
+}
+}
+/*
+* Loop will fun until even stack is empty by pushing
+* even values back to stack
+*/
+while(!evenValues.isEmpty()) {
+stack.push(evenValues.pop());
+}
+}
+/*************************************
+* print Stack
+* Parameters: stack
+* Return: N/A
+*************************************/
+public static void printStack (Stack<Integer> stack) {
+Stack<Integer> printStack = new Stack<>();
+/*
+* loop will run until stack is empty pushing stack
+* to temporary stack
+*/
+while(!stack.isEmpty()) {
+printStack.push(stack.peek());
+stack.pop();
+}
+/*
+* loop will run until printStack stack is empty peeking
+* at values and printing them. Once printed pop them off
+* printStack and push value back to original stack
+*/
+while(!printStack.isEmpty()) {
+    // To put values back in the original stack
+    System.out.println (stack.push(printStack.pop())); 
+}
+}
+  
+/*************************************
+* fill Generic Stack
+* Parameters: stack, int to determine
+* file type
+* Return: N/A
+*************************************/
+public static <E> void fillGenericStack(GenericStack<E> stack, int file) throws IOException {
+final String NUMBERS_FILE_NAME = "Numbers.txt";
+final String STRINGS_FILE_NAME = "Strings.txt";
+//if file int is 0 it is an integer file
+if(file == 0) {
+File inputFileName = new File(NUMBERS_FILE_NAME);
+Scanner inputFile = new Scanner(inputFileName);
+//loop reads from file and pushes value to stack
+while(inputFile.hasNext()) {
+Integer number = inputFile.nextInt();
+stack.push((E) number);
+}
+inputFile.close();
+//else its a string file
+}else {
+File inputFileName = new File(STRINGS_FILE_NAME);
+Scanner inputFile = new Scanner(inputFileName);
+//loop reads from file and pushes value to stack
+while(inputFile.hasNext()) {
+String string = inputFile.next();
+stack.push((E) string);
+}
+inputFile.close();
+}
+}
+/*************************************
+* print Stack
+* Parameters: stack
+* Return: N/A
+*************************************/
+public static <E> void printStack (GenericStack<E> stack) {
+Stack<E> printStack = new Stack<>();
+/*
+* loop runs until stack is empty by pushing stack
+* value to printStack and then printing the popped
+* value off stack.
+*/
+while(!stack.isEmpty()) {
+printStack.push(stack.peek());
+System.out.println(stack.pop());
+}
+/*
+* loop runs until printStack is empty by pushing
+* printStack values onto original stack 
+*/
+while(!printStack.isEmpty()) {
+ 
+    // To put values back in the original order
+    stack.push(printStack.pop()); 
+}
+}
+/*************************************
+* sort Stack
+* Parameters: stack
+* Return: N/A
+*************************************/
+public static <E extends Comparable<E>> void sortStack 
+     (GenericStack<E> stack) {
+GenericStack<E> sort = new GenericStack<>();
+int stackSize = stack.getSize();
+ 
+/*
+* for the length of stackSize, invoke removeSmallest
+* method with the arguments of stack. This will return
+* the smallest element and push it to the sort stack
+*/
+for(int i =0; i< stackSize; i++) {
+E smallElement = removeSmallest(stack);
+sort.push(smallElement);
+}
+/*
+* loop will run until sort stack is empty putting
+* values back into original stack
+*/
+while(!sort.isEmpty()) {
+    // To put values back in the original stack
+    stack.push(sort.pop()); 
+}
+}
+/*************************************
+* remove Smallest
+* Parameters: stack
+* Return: E removeSmallest
+*************************************/
+public static <E extends Comparable<E>> E removeSmallest(GenericStack<E> stack) {
+GenericStack<E> sort = new GenericStack<>();
+/*
+* loop will run until stack is empty. using compareTo
+* method to determine the smallest element in the stack
+*/
+while(!stack.isEmpty()) {
+E popElement = stack.pop();
+while(!sort.isEmpty() && (popElement.compareTo(sort.peek())) < 0) {
+stack.push(sort.pop());
+}
+sort.push(popElement);
+}
+int sortSize = sort.getSize();
+/*
+* for the size of sort stack put elements
+* back into original stack
+*/
+for(int i=0; i< sortSize; i++) {
+    stack.push(sort.pop()); 
+}
+//stack is sorted with the smallest element as last
+//one in, so assign smallest element to that popped
+//value and return it to sort method
+E smallestElement = stack.pop();
+ 
+return smallestElement;
+}
+ 
+/*************************************
+* move To Bottom
+* Parameters: stack,valueToMove which
+* is user inputed
+* Return: boolean findValue
+*************************************/
+public static <E> boolean moveToBottom(GenericStack<E> stack,
+  E valueToMove) {
+ 
+boolean findValue = false;
+GenericStack<E> temp = new GenericStack<>();
+E foundValue = null;
+ 
+/*
+  * if stack is an instance of String then use compareTo
+  * method to determine which value is equal to valueToMove
+  * else stack is an Integer stack
+  */
+if(valueToMove instanceof String) {
+/*
+  * while stack is not empty check if one value compared 
+  * to another value is not equal to zero. If it is 
+  * equal to zero it is the same as input value and
+  * can be moved to bottom of stack
+  */
+while(!stack.isEmpty()) {
+E popValue = stack.peek();
+ 
+if(popValue.toString().equalsIgnoreCase(valueToMove.toString())/*popValue.toString().compareTo(valueToMove.toString()) != 0*/) {
+temp.push(stack.pop());
+}else {
+findValue = true;
+foundValue = stack.pop();
+}
+ 
+}
+}else {
+ 
+/*
+  * while stack is not empty check if values are equal.
+  */
+while(!stack.isEmpty()) {
+E popValue = stack.peek();
+ 
+if(popValue != valueToMove) {
+temp.push(stack.pop());
+}else {
+findValue = true;
+foundValue = stack.pop();
+}
+ 
+}
+}
+ 
+/*
+  * if value is fount add it to the bottom of stack
+  */
+if(foundValue != null) {
+stack.push(foundValue);
+}
+ 
+int tempSize = temp.getSize();
+//return values to original stack
+for(int i=0; i< tempSize; i++) {
+    stack.push(temp.pop()); 
+}
+//return found value
+return findValue;
+}
+ 
+}//end class
+
+
+class GenericStack<E> {
+private ArrayList<E>list;
+public GenericStack() {
+//creates an empty stack to allocate memory for ArrayList
+list = new ArrayList<>();
+}
+public boolean isEmpty() {
+//indicates if ArrayList/Stack is currently empty
+if(list.size() == 0) {
+return true;
+}else {
+return false;
+}
+}
+public int getSize() {
+//returns number of objects on stack
+return list.size();
+}
+public E peek() {
+//returns the object on top of stack without removing it
+if(list.isEmpty()) {
+return null;
+}else {
+return list.get(getSize()-1);
+}
+}
+public E pop() {
+//removes obj from top of stack
+if(list.isEmpty()) {
+return null;
+}else {
+return list.remove(getSize()-1);
+}
+}
+public void push(E value) {
+//adds an obj to top of stack 
+list.add(value);
+}
+}
