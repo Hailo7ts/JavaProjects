@@ -1,0 +1,292 @@
+import java.util.Scanner;
+
+
+
+
+public class MartinHaileyHW06 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner input = new Scanner(System.in);
+		
+		System.out.println("Admin must log-in to set up the Denver Nugget ticket sales for charity\n");
+		
+		
+		//get valid pin
+		final String VALIDPIN = "RuoK";
+		
+		boolean login = getValidLogin(input, VALIDPIN);
+		System.out.println(login);
+		
+		boolean salesMode = true;
+		double charityPercent = 0;
+		double totalSales = 0;
+		double totalCharity = 0;
+		
+		if(login == true) {
+			//get charity percent			
+			
+			final double MIN = 5;
+			final double MAX = 25;
+			charityPercent = getCharityPercent(MIN, MAX, input);
+			System.out.println(charityPercent);
+			
+			
+			//enter sales mode
+			salesMode = true;
+			
+			
+			
+			
+		while(salesMode != false) {
+			
+				//display ticket info
+				displayTicketInformation(charityPercent);
+			
+			
+				//get a valid seat
+				char seatLevel = getValidLevel(input);
+				System.out.println(seatLevel);
+				if(seatLevel == 'Q') {
+					login = getValidLogin(input, VALIDPIN);
+					if(login == true) {
+						System.out.printf("Total Sales: $ %.2f \n", totalSales);
+						System.out.printf("Total raised for charity: $ %.2f \n", totalCharity);
+						System.out.println("Exiting Denver Nuggets fundraiser");//sales mode QUIT
+					
+						
+						
+						
+						
+						
+						salesMode = false;
+					}//exit
+				}else{//login true
+			
+					//get valid number of tickets
+					final int CMIN = 1;
+					final int CMAX = 10;
+					int tickets = getValidNumOfTickets(input, CMIN, CMAX);
+					System.out.println(tickets);
+				
+					
+					
+					
+					
+					double totalCharge = calculateCharge(seatLevel, tickets);
+					System.out.printf("Your charge is %.2f \n", totalCharge);
+					
+				
+					totalSales += totalCharge;
+					totalCharity += totalCharge * (charityPercent * .01);
+					
+					
+					
+					
+					processPayment(input);
+					
+					
+					
+					System.out.printf("Thanks for your purchase. $ %.2f will go to charity \n", totalCharity);
+				}
+		}//end of loop
+			
+		}else{
+			System.out.println("Exiting Denver Nuggets fundraiser.");
+			
+		}
+		
+		
+		
+		input.close();
+	}//end of main
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*************************************
+	 * get Valid Level 
+	 * Parameters: Scanner object to read input
+	 * Return: valid seat level
+	*************************************/
+	public static char getValidLevel(Scanner readInput) {
+		char seat = ' ';
+		
+		boolean validLevel = false;
+		do {
+			System.out.println("Enter one of the following characters to select your level: \n");
+			System.out.println("C: Courtside  M: Mid Level   U: Upper Level");
+			String level = readInput.next();
+			level = level.toUpperCase();
+			seat = level.charAt(0);
+			if((seat == 'C') || (seat == 'M') || (seat == 'U') || (seat == 'Q')) {
+				validLevel = true;
+			}else {
+				validLevel = false;
+			}
+		
+		
+		}while(validLevel != true);
+		return seat;
+	}//end of get valid level
+	
+	
+	
+	/*************************************
+	 * get Valid Login 
+	 * Parameters: Scanner object to read input
+	 * String correctPin to check for valid pin number
+	 * Return: boolean for valid Login 
+	*************************************/
+	public static boolean getValidLogin(Scanner methodInput, String correctPin) {
+		int count = 1;
+		String pin = " ";
+		
+		
+		boolean validLogin = false;
+		do {
+			System.out.println("Enter pin: ");
+			pin = methodInput.next();
+			count ++;
+			
+			if(pin.equals(correctPin)) {
+				validLogin = true;
+			}else {
+				validLogin = false;
+			}
+			
+			
+		}while(validLogin != true && count <= 3);
+		
+		return validLogin;
+		
+	}//end of getValidLogin
+	
+	
+	
+	/*************************************
+	 * get Charity Percent
+	 * Parameters: Scanner object to read input
+	 * int min and max to check for valid range
+	 * Return: valid Charity Percent
+	*************************************/
+	public static double getCharityPercent(double min, double max, Scanner methodInput) {
+		double cPercent = 0;
+		do {
+			System.out.println("Enter the percentage going to charity. Must be in the range of 5% to 25%: ");
+			cPercent = methodInput.nextDouble();
+		}while((cPercent < min || cPercent > max));
+		return cPercent;
+	}//end of getCharityPercent
+	
+	
+	
+	/*************************************
+	 * display Ticket Information 
+	 * Parameters: double charity percent
+	 * Return: no return value
+	*************************************/
+	public static void displayTicketInformation(double percent) {
+		System.out.println("----- Denver Nuggets Ticket Sales Mode -----");
+		System.out.printf("Buy Nuggets tickets and %.2f percent will go to charity.", percent);
+		System.out.println("\nLevel             Price Per Person\r\n"
+				+ "-------------------------------------\r\n"
+				+ "Courtside           $300\r\n"
+				+ "Mid Level           $200\r\n"
+				+ "Upper Level         $100\r\n"
+				+ "");
+	}//end of get displayTickInformation
+	
+	
+	
+	/*************************************
+	 * get Valid Number Of Tickets 
+	 * Parameters: Scanner object to read input
+	 * int min and max to check for valid range
+	 * Return: valid Number Of Tickets
+	*************************************/
+	public static int getValidNumOfTickets(Scanner methodInput, int min, int max) {
+		System.out.println("Enter the number of tickets you want to purchase. Must be in the range of 1 to 10: ");
+		int numOfTickets = methodInput.nextInt();
+		while((numOfTickets < 1 || numOfTickets > 10)) {
+			System.out.println("Enter the number of tickets you want to purchase. Must be in the range of 1 to 10: ");
+			numOfTickets = methodInput.nextInt();
+		}
+		
+		return numOfTickets;
+	}//end of getValidNumOfTickets
+	
+	
+	
+	/*************************************
+	 * calculate Charge of seat and tickets
+	 * Parameters: char validSeatLevel and
+	 * int numberOfTickets to calculate cost
+	 * Return: total charge for tickets and level
+	*************************************/
+	public static double calculateCharge(char validSeatLevel, int numberOfTickets) {
+		double total = 0;
+		switch(validSeatLevel){
+		case 'C':
+			total = numberOfTickets * 300;
+			break;
+		case 'M':
+			total = numberOfTickets * 200;
+			break;
+		case 'U':
+			total = numberOfTickets * 100;
+			break;
+			
+		}
+		
+		return total;
+	}
+	
+	
+	
+	/*************************************
+	 * get valid card to process payment
+	 * Parameters: Scanner object to read input
+	 * Return: void has no return value
+	*************************************/
+	public static void processPayment(Scanner methodInput) {
+		String creditCard = " ";
+		boolean goodData = false;
+		
+		do {
+			System.out.println("Enter your credit card in the pattern XXXX-####-#####: ");
+			creditCard = methodInput.next();
+			if(creditCard.length()-1 == 14) {
+				if(Character.isLetter(creditCard.charAt(0)) && Character.isLetter(creditCard.charAt(1)) && 
+						Character.isLetter(creditCard.charAt(2)) &&Character.isLetter(creditCard.charAt(3))) {
+					if(Character.isDigit(creditCard.charAt(5)) && Character.isDigit(creditCard.charAt(6)) &&
+							Character.isDigit(creditCard.charAt(7)) &&Character.isDigit(creditCard.charAt(8))) {
+						if((creditCard.charAt(4) == '-') && (creditCard.charAt(9) == '-')) {
+							goodData = true;
+						}else {
+							System.out.println("You didn't enter hypehs for the - positions.");
+						}
+					}else {
+						System.out.println("You didn't enter digits for the # positions.");
+					}//digits
+				}else {
+					System.out.println("You didn't enter a letter for the X positions.");
+				}//letters
+			}else {
+				System.out.println("The credit card length entered is not correct.");
+			}
+			
+			
+		}while(goodData !=true);
+	}//end of processPayment
+	
+	
+	
+	
+	
+}//end of class
