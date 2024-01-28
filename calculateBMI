@@ -1,0 +1,93 @@
+/* Name: Hailey Martin
+ * Class name: CS1150
+ * Section: M/W
+ * Due date: 08/31/22
+ * Description: HW01
+ * This program will obtain input from the user, declare variables of different types, use variables to calculate body fat and display results.
+ */
+
+import java.util.Scanner;
+public class MartinHaileyHW01 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		//takes in an input
+		Scanner input = new Scanner(System.in);
+		
+		//print out the request for age
+		//System.out.print("Enter age in years: ");
+		
+		//saves input in variable age
+		//double age = input.nextDouble();
+		
+		//print out the request for height
+		System.out.print("Enter height in inches: ");
+		
+		//saves input in variable
+		double height = input.nextDouble();
+		
+		
+		//print out the request for neck
+		System.out.print("Enter neck in inches: ");
+		
+		
+		//saves input in variable
+		double neck = input.nextDouble();
+		
+		//prints out request for waist
+		System.out.print("Enter waist in inches: ");
+		
+		//saves variable for waist
+		double waist = input.nextDouble();
+		
+		//prints request for hip 
+		System.out.print("Enter hip in inches: ");
+		
+		//saves variable for hip
+		double hip = input.nextDouble();
+		
+		//prints request for weight
+		System.out.print("Enter weight in lbs: ");
+		
+		//saves variable for weight
+		double weight = input.nextDouble();
+		
+		
+		
+		//variable that holds the equation to get army fat (calculator)
+		//This uses logarithmic math method 
+		double armyFatWoman = 163.205 * Math.log10(waist + hip - neck)- 97.684* Math.log10(height)-78.387;
+		
+	
+		
+		//variable that holds the equation for getting BMI (calculator)
+		double bodyMassIndex = weight / (height * height)* 703;
+		
+		
+		//prints the army fat for a woman base on user input and calculations
+		System.out.println("\nYour army body fat is: " + armyFatWoman);
+		
+		//prints Army Fat Percent Table
+		System.out.println("Maximum Body Fat to Join Army \nAge      Male      Female");
+		System.out.println("---------------------------------------------------------");
+		System.out.println("17-20      24%      30% \n21-27      26%      32% \n28-39      28%      34% \n40&over    30%      36%\n");
+		
+		
+		//prints out the calculations of BMI based on user input
+		System.out.println("Your BMI is: " + bodyMassIndex);
+			
+		
+		//prints BMI Table
+		System.out.println("Recommended Body Weight \nBMI                  Weight Status");
+		System.out.println("------------------------------------------------------------");
+		System.out.println("Below 18.5            Underweight \n18.5-below 25          Healthy Weight \n25 - below 30          Overweihgt \nOver 30               Obese\n");
+		
+		
+		//this closes out the input
+		input.close();
+		
+		
+		
+	}//end of main
+}//end of class
