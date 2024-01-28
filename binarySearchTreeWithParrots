@@ -1,0 +1,215 @@
+/*
+* Hailey Martin
+* CS1450 Section 001 T/R
+* Assignment #10
+* Due Date: 04/27/23
+* Description:
+* This program will fill a binary search tree with
+* parrots. Each parrot will read from file their ID
+* number, name, and song when the parrots are placed in
+* the tree they will be ordered by their IDs. After 
+* parrots are place in the tree the program will use
+* level-order to display the parrots song and list
+* parrot names using the leaves of the tree going left
+* to right
+*/
+ 
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.io.File;
+import java.util.Scanner;
+ 
+ 
+public class MartinHaileyAssignment10 {
+ 
+public static void main(String[] args)throws IOException {
+// TODO Auto-generated method stub
+ 
+//create instance of binary tree
+BinaryTree binaryTree = new BinaryTree();
+//create parrots with data members read from file
+// Name of files to read from
+final String PARROT_FILE_NAME = "parrotsTest.txt";
+// Setup file reference variables to refer to each text file
+File ParrotFileName = new File(PARROT_FILE_NAME);
+//fill Linked lists with file information 
+Scanner parrotFile = new Scanner (ParrotFileName);
+while(parrotFile.hasNext()){ 
+// Read parrots information from the file into separate variables
+int id = parrotFile.nextInt();
+String name = parrotFile.next().trim();
+String songWord = parrotFile.next().trim();
+// Create a Parrot object
+Parrot parrot = new Parrot(id, name, songWord);
+//add Parrot to binary tree
+binaryTree.insert(parrot); 
+}//end while loop
+//traverse in level order and print parrot song
+System.out.println("Parrot's Song\r\n"
++ "-------------------------------");
+binaryTree.levelOrder();
+//visit leaf nodes and print each parrots name
+System.out.println("\nParrots on Leaf Nodes\r\n"
++ "-------------------------------");
+binaryTree.visitLeaves();
+parrotFile.close();
+}//end main
+ 
+}//end class
+ 
+//Represents one parrot
+class Parrot implements Comparable<Parrot>{
+//Private Data Fields
+int id;
+String name;
+String songWord;
+//Public Methods
+//Constructor
+public Parrot(int id, String name, String songWord) {
+this.id = id;
+this.name = name;
+this.songWord = songWord;
+}
+//Getters
+public String name() {
+return name;
+}
+//Returns string containing parrot’s songWord
+public String sing() {
+return songWord;
+}
+//Returns result that indicates whether this 
+//parrot’s ID is less than, equal to, or greater 
+//than the ID of the parrot it's being compared to
+@Override
+public int compareTo(Parrot otherParrot) {
+if(otherParrot.id > this.id) {
+return -1;
+}else if(otherParrot.id < this.id) {
+return 1;
+}else {
+return 0;
+}
+}
+}//end Parrot class
+ 
+//A binary search tree constructed from nodes each node
+//contains a parrot and ID is used as the node’s key
+class BinaryTree{
+//Private Data Fields
+TreeNode root;
+//Public Methods
+//Constructor
+public BinaryTree() {
+root = null;
+}
+//Adds a parrot to tree maintaining the binary search
+//tree property returns true if parrot was added, false 
+//if parrot was not added
+public boolean insert(Parrot parrotToAdd) {
+TreeNode newNode = new TreeNode(parrotToAdd);
+boolean wasInserted = true;
+//if tree is empty root will hold first new node
+if(root == null) {
+root = newNode;
+}else {
+//node being added is not the first 
+TreeNode parent = null;
+TreeNode current = root;
+//while current isnt null move in the tree
+//either left or right depending on what 
+//comparison returngs
+while(current != null) {
+if(newNode.parrot.compareTo(current.parrot)<0) {
+//move left
+parent = current;
+current = current.left;
+}else if(newNode.parrot.compareTo(current.parrot)>0) {
+//move right 
+parent = current;
+current = current.right;
+}else {
+//duplicate node
+wasInserted = false;
+}
+}
+//if out of the while loop this means that
+//position is at subtree and now value can
+//be added to subtree based on comparison
+if(newNode.parrot.compareTo(parent.parrot)<0) {
+//add to left sub-tree
+parent.left = newNode;
+}else {
+//add to right sub-tree
+parent.right = newNode;
+}
+}
+return wasInserted;
+}
+//Traverses the tree in level-order, printing each 
+//parrot’s word as it is visited. As you move through
+//the levels in the tree you will need to use a queue
+//to keep track of the nodes in the next level down
+public void levelOrder() { 
+if(root != null) {
+//create queue and add root
+Queue<TreeNode> nodeQueue = new LinkedList<>();
+nodeQueue.offer(root);
+while(!nodeQueue.isEmpty()) {
+//remove node and save to temp
+TreeNode tempNode = nodeQueue.remove();
+System.out.print(tempNode.parrot.songWord + " ");
+if(tempNode.left != null) {
+nodeQueue.offer(tempNode.left);
+}
+if(tempNode.right != null) {
+nodeQueue.offer(tempNode.right);
+}
+}//end loop
+}
+System.out.println();
+}
+//This method only calls the private recursive 
+//method visitLeaves because main doesn’t have 
+//access to the root, this method is called in main
+//because this method is inside the BinaryTree class
+//it has access to the root and therefore can call 
+//the recursive visitLeaves method sending it the root
+public void visitLeaves() {
+visitLeaves(root);
+}
+//Private Methods
+//recursive, visits leaf nodes in left to right 
+//order Left-most leaf first, then the one to its 
+//right, and so-on to the right-most leaf in the 
+//tree. At each leaf, print the name of the parrot 
+//at that leaf
+private void visitLeaves(TreeNode aNode) {
+//check that tree is not empty if it isn't then
+//traverse starting at the left leaf then move
+//to the root and then lastly the most right
+if(aNode != null) {
+visitLeaves(aNode.left);
+System.out.println(aNode.parrot.name);
+visitLeaves(aNode.right);
+}
+}
+//Private Inner Class
+//Represents one node in the binary tree node stores
+//a parrot in the data and two references to the 
+//nodes beneath it in the tree
+private class TreeNode{
+//Private Data Fields
+Parrot parrot;
+TreeNode left;
+TreeNode right;
+//Public Methods
+//Constructor
+public TreeNode(Parrot incomingParrot){
+this.parrot = incomingParrot;
+left = null;
+right = null;
+}
+}//end of TreeNode
+}
