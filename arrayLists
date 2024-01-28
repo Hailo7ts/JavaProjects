@@ -1,0 +1,278 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Collections;
+
+
+/*
+ * Hailey Martin
+ * CS1450 Section 001 T/R
+ * Assignment #4
+ * Due Date: 02/23/23
+ * Description:
+ * This program will create a model of the ocean in the
+ * form of a grid of elements which are either ships 
+ * or land. The size of the grid is specified by the 
+ * file, reading in the number of rows and columns to
+ * create an ocean object. This grid will be filled 
+ * partially with land and ships with their locations
+ * based on their files specified location. When ocean
+ * has been filled with ships and land the grid will 
+ * be displayed and a ship report will be printed. The
+ * ship report will display ships in order from largest
+ * to smallest capacity.
+ */
+public class MartinHaileyAssignment4 {
+
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+
+		//read from ocean file
+		final String FILE_NAME = "Ocean.txt";
+		
+		File inputFileName = new File(FILE_NAME);
+		Scanner inputFile = new Scanner(inputFileName);
+		
+		final String OCEAN_TYPE = inputFile.next();
+		final int NUM_ROWS = inputFile.nextInt();
+		final int NUM_COLS = inputFile.nextInt();
+		
+		
+		//Task 1: Create an ocean object
+		Ocean ocean1 = new Ocean(OCEAN_TYPE.trim(), NUM_ROWS,
+				NUM_COLS);
+		
+		
+		//Task 2: Fill the ocean with ships and land from ships.txt
+		// and land.txt. While there are more ships keep reading 
+		//file and creating ship objects to add to Ocean. While 
+		//there are more land keep reading file and creating land 
+		//objects to add to Ocean
+		
+		final String SHIPS_FILE_NAME = "Ships.txt";
+		
+		File inputFileName2 = new File(SHIPS_FILE_NAME);
+		Scanner inputFile2 = new Scanner(inputFileName2);
+		
+		while(inputFile2.hasNextLine()){
+			//read from ships file		
+			final int SHIP_NUM_ROWS = inputFile2.nextInt();
+			final int SHIP_NUM_COLS = inputFile2.nextInt();
+			final int CAPACITY = inputFile2.nextInt();
+			final String CLASS = inputFile2.next();
+			final String NAME = inputFile2.nextLine();
+			
+			
+			//Create a ship object to add to ocean array
+			OceanElement ship1 = new Ship(CLASS.trim(), CAPACITY, NAME.trim());
+			
+			ocean1.addElement(SHIP_NUM_ROWS, SHIP_NUM_COLS, 
+					ship1);	
+		}
+		
+		final String LAND_FILE_NAME = "Land.txt";
+		
+		File inputFileName3 = new File(LAND_FILE_NAME);
+		Scanner inputFile3 = new Scanner(inputFileName3);
+		
+		while(inputFile3.hasNextLine()){
+			//read from ships file		
+			final int LAND_NUM_ROWS = inputFile3.nextInt();
+			final int LAND_NUM_COLS = inputFile3.nextInt();		
+			
+			//Create a ship object to add to ocean array
+			OceanElement land1 = new Land();
+			
+			ocean1.addElement(LAND_NUM_ROWS, LAND_NUM_COLS, land1);
+						
+		}
+		inputFile.close();
+		inputFile2.close();
+		inputFile3.close();
+		
+		//Task 3: Display the ocean
+		ocean1.displayOcean();
+		
+		//Task 4: print ship report
+		System.out.println("************************************************************************\r\n"
+				+ "           OCEAN SHIP REPORT \n************************************************************************\r\n"
+				+ "Classification\t\t Name\t\t Capacity\r\n "
+				+ "\t\t(From Largest Capacity to Smallest Capacity)\n"
+				+ "------------------------------------------------------------------------");
+		
+		printShips(ocean1);
+		
+	}//end main
+
+	public static void printShips(Ocean ocean) {
+		//places ships into an ArrayList, use Collections.sort()
+		//print ships in ArrayList
+		ArrayList<Ship> ships = new ArrayList<>();
+		
+		//display elements that are an instanceof ship
+		for(int row=0; row<ocean.getNumberRows(); row++) {
+			for(int col=0; col<ocean.getNumberColumns(); col++) {
+				if(ocean.getElement(row, col) instanceof Ship) {
+					ships.add((Ship)ocean.getElement(row, col));
+				}
+			}
+		}
+		Collections.sort(ships);
+		
+		String shipReport = ships.toString();
+		System.out.println(shipReport);
+	}
+	
+	
+}//end assignment class
+
+class Ocean{
+	private String name;
+	private int numberRows;
+	private int numberColumns;
+	private OceanElement[][]grid;
+	
+	public Ocean (String name, int numberRows, 
+			int numberColumns) {
+		this.name = name;
+		this.numberRows = numberRows;
+		this.numberColumns = numberColumns;
+		
+		//allocate memory for grid
+		grid = new OceanElement[numberRows][numberColumns];
+	}
+	
+	
+	//getters
+	public String getName() {
+		return name;
+	}
+	
+	public int getNumberRows() {
+		return numberRows;
+	}
+	
+	public int getNumberColumns() {
+		return numberColumns;
+	}
+	
+	public void addElement(int row, int column, 
+			OceanElement element) {
+		//place incoming elements in 2Darray at specified
+		//location
+		if(numberColumns < grid.length-1 ) {
+			grid[row][column]= element;
+		}
+	}
+	
+	
+	public OceanElement getElement(int row, int column) {
+		//return element in 2D array at specific location
+		//if no element in location of array returns null
+		
+		if(grid[row][column] != null) {
+			
+			if(grid[row][column] instanceof Ship) {
+				return grid[row][column];
+			}else {
+				return grid[row][column];
+			}
+				
+		}else{
+			return null;
+		}
+		
+	}
+	
+	public void displayOcean() {
+		//display ocean grid
+		System.out.println("Loading Atlantic ocean grid with land and ships...\r\n"
+				+ "\r\n"
+				+ "	Column 0	Column 1	Column 2	Column 3	Column 4	Column 5");
+		
+		int rowTableLable = 0;
+		for(int row=0; row<numberRows; row++) {
+			System.out.printf("Row %d\t", rowTableLable);
+			rowTableLable++;
+			for(int col=0; col<numberColumns; col++) {
+				if(grid[row][col] instanceof Ship) {
+					System.out.print(((Ship)grid[row][col]).getName() +	"\t\t");
+				}else if(grid[row][col] instanceof Land) {
+					System.out.print(grid[row][col].getType() +	"\t\t");
+				}else {
+					System.out.print("-------\t\t");
+				}
+			}
+			System.out.println();
+		}
+	}
+	
+}//end of Ocean class
+
+class OceanElement {
+	private String type;
+	
+	public OceanElement(String type) {
+		this.type = type;
+	}
+	
+	//getter
+	public String getType() {
+		return type;
+	}
+	
+	
+}//end OceanElement class
+
+class Ship extends OceanElement 
+	implements Comparable<Ship>{
+	
+	private String name;
+	private String classification;
+	private int capacity;
+	
+	public Ship(String classification, int capacity, 
+			String name) {
+		super("Ship");
+		this.classification = classification;
+		this.capacity = capacity;
+		this.name = name;
+
+	}
+	
+	//getter
+	public String getName() {
+		return name;
+	}
+	
+	@Override
+	public String toString(){
+		return String.format("%-10s\t\t%-10s\t\t%d\n", 
+				classification, name, capacity);
+		
+	}
+	
+	@Override
+	public int compareTo(Ship otherShip) {
+		//compares two ships based on capacity and returns
+		// an int value of -1,0, or 1 based on result
+		
+		if(this.capacity < otherShip.capacity) {
+			return 1;
+		}else if(this.capacity > otherShip.capacity) {
+			return -1;
+		}else {
+			return 0;
+		}
+		
+	}
+	
+}//end Ship class
+
+class Land extends OceanElement{
+	
+	public Land() {
+		super("Land");
+	}
+}
