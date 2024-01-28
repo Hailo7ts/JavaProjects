@@ -1,0 +1,438 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Scanner;
+ 
+ 
+/*
+* Hailey Martin
+* CS1450 Section 001 T/R
+* Assignment #7
+* Due Date: 03/23/23
+* Description:
+* This program will contain two oceans, the Atlantic and
+* Pacific, and one canal that the ships will use to move
+* between the two oceans. All the ships will start in the 
+* Atlantic and then the control center will move the ships
+* into the canal where the ships will then be organized
+* in the order of classification Navy, Tanker, Cargo and
+* Cruise. Once ships are loaded into the canal they will 
+* be sent to either transit way 1 or transit way 2. Transit
+* way 1 will hold only cruise ships and transit way 2 will
+* hold all other classes of ships. The last step will be
+* the ships being moved by control center into the Pacific
+* ocean.
+*/
+public class MartinHaileyAssignment7 {
+ 
+public static void main(String[] args) throws IOException {
+// TODO Auto-generated method stub
+// Name of files to read from
+final String OCEAN_FILE_NAME = "Ocean7.txt";
+final String LAND_FILE_NAME = "Land7.txt";
+final String SHIP_FILE_NAME = "Ships7.txt";
+// Setup file reference variables to refer to each text file
+File oceanFileName = new File(OCEAN_FILE_NAME);
+File landFileName = new File(LAND_FILE_NAME);
+File shipsFileName = new File(SHIP_FILE_NAME);
+// Open the ocean file for reading by creating a scanner for the file.
+// The 1st line contains the name of the ocean
+// The 2nd line and 3rd line tell how many rows and columns are in ocean grid.
+// Use the rows and columns to create a 2-D array that models the
+//ocean's grid.
+Scanner oceanFile = new Scanner(oceanFileName);
+//read for first ocean
+String oceanName = oceanFile.nextLine();
+int numberRows = oceanFile.nextInt();
+int numberColumns = oceanFile.nextInt();
+//read for second ocean
+String oceanName2 = oceanFile.next();
+int numberRows2 = oceanFile.nextInt();
+int numberColumns2 = oceanFile.nextInt();
+// Create the ocean object based on the values read from the file.
+Ocean7 ocean1 = new Ocean7(oceanName, numberRows,
+numberColumns);
+// Create the ocean object based on the values read from the file.
+Ocean7 ocean2 = new Ocean7(oceanName2, numberRows2,
+numberColumns2);
+// Load the ocean with ships and land
+System.out.println("Loading " + oceanName + " ocean grid with ships and land...");
+System.out.println();
+// Open the ships file for reading by creating a scanner for the file
+// Create the ship objects from the details provided in the file.
+// Student Note: In this assignment the number of ships is not part of the file so you
+// need to use a while loop and the hasNext method on the Scanner to read ships until the
+// end of the file is reached.
+Scanner shipsFile = new Scanner (shipsFileName);
+while (shipsFile.hasNext()) {
+// Read ship information from the file into separate variables
+int rowNumber = shipsFile.nextInt();
+int columnNumber = shipsFile.nextInt();
+int capacity = shipsFile.nextInt();
+String classification = shipsFile.next(); // cruise, cargo, tanker, navy
+String name = shipsFile.nextLine().trim();
+// Create a ship object
+// Place ship object into its correct location in the ocean
+Ship7 ship = new Ship7(classification, capacity, name);
+ocean1.addElement(rowNumber, columnNumber, ship);
+} // while more ships
+// Open the land file for reading by creating a scanner for the file
+// Create the land objects from the details provided in the file.
+Scanner landFile = new Scanner (landFileName);
+while (landFile.hasNext()) {
+// Read land location from the file into separate variables
+int rowNumber = landFile.nextInt();
+int columnNumber = landFile.nextInt();
+// Create a land object
+// Place land object into its correct location in the ocean
+Land7 land = new Land7();
+ocean1.addElement(rowNumber, columnNumber, land);
+} // while more land
+// Close all the files
+oceanFile.close();
+landFile.close();
+shipsFile.close();
+// Display the ocean's grid
+ocean1.displayOcean();
+//create control center object
+ControlCenter controlCenter = new ControlCenter();
+//create canal object
+Canal panamaCanal = new Canal();
+//Start Panama canal simulation
+//control center moves ships into canal
+System.out.println("\nController: Moving ships from ocean to channel that forms "
++ "approach to the transit ways:\r\n"
++ "-------------------------------------------------------------------"
++ "--------------------");
+controlCenter.moveShipsIntoChannel(ocean1, panamaCanal);
+//control center moves ships into transit
+System.out.println("\nController: Moving ships waiting in the channel into transit ways:\r\n"
++ "-------------------------------------------------------------------"
++ "--------------------");
+controlCenter.moveShipsIntoTransitWays(panamaCanal);
+//control center moves ships into transit
+System.out.println("\nController: Moving ships from transit ways into Pacific Ocean:\r\n"
++ "---------------------------------------------------------------");
+controlCenter.moveShipsIntoPacificOcean(ocean2, 8, 1, panamaCanal);
+// Display the Atlantic ocean's grid
+System.out.println("\nShow Atlantic Ocean with no ships...");
+ocean1.displayOcean();
+// Display the Pacific ocean's grid
+System.out.println("\nShow Pacific Ocean with ships...");
+ocean2.displayOcean();
+}//end main
+ 
+ 
+ 
+}//end class
+ 
+class Ocean7 {
+private String name; // Name of ocean
+private int numberRows; // Number of rows in the grid
+private int numberColumns; // Number of columns in the grid
+private OceanElement7[][] grid; // 2-D array of ocean entities (ship or land)
+// This is a HAS-A-relationship - Ocean HAS-A grid
+public Ocean7(String name, int numberRows, int numberColumns) {
+this.name = name;
+this.numberRows = numberRows;
+this.numberColumns = numberColumns;
+// Allocate memory for the grid
+// Student Note: The 1st index is the number of rows, the 2nd index is number of columns
+grid = new OceanElement7[numberRows][numberColumns];
+}
+// Returns the name of the ocean
+public String getName() {
+return name;
+}
+// Returns the number of rows in the grid
+public int getNumberRows() {
+return numberRows;
+}
+// Returns the number of columns in the grid
+public int getNumberColumns() {
+return numberColumns;
+}
+// Add an ocean element to the grid in a specific row and column location
+public void addElement(int row, int column, OceanElement7 oceanElement) {
+grid[row][column] = oceanElement;
+}
+public void removeElement (int row, int column) {
+grid[row][column] = null;
+}
+// Returns the ocean element in the specified row and column in the array.
+// When a location does NOT contain an ocean element, returns null.
+public OceanElement7 getElement(int row, int column) {
+// Return the ocean element which could be null if location is empty
+// Student Note: When you created the array, Java initialized the array with null values
+return grid[row][column];
+}
+ 
+// Displays all elements in the ocean's grid
+public void displayOcean() {
+// Display header for the number of columns in the 2D array
+for (int column = 0; column < numberColumns; column++) {
+System.out.printf("\t%s %d", "Column", column);
+}
+System.out.printf("\n\n");
+// For each row print the elements in that row
+for (int row = 0; row < numberRows; row++) {
+System.out.printf("%s%d", "Row ", row);
+// For each column display the element type otherwise display "----" to represent null
+for (int column = 0; column < numberColumns; column ++) {
+// Get element in location [row,column]
+OceanElement7 element = grid[row][column];
+// If there is an element in location [row,column] display its name if its a ship and
+// type if it is land
+if (element != null) {
+if (element instanceof Ship7) {
+System.out.printf ("\t%-8s",
+((Ship7)element).getName());
+}else {
+System.out.printf ("\t%-8s",
+element.getType());
+}
+}else {
+System.out.printf ("\t%-8s", "-------");
+}
+} // for each column
+System.out.println();
+System.out.println();
+} // for each row
+} // displayOcean
+} // Ocean7
+ 
+ 
+// Superclass for different types of objects in the ocean
+class OceanElement7 {
+private String type; // Type of ocean element (ship or land)
+public OceanElement7 (String type) {
+this.type = type;
+}
+public String getType() {
+return type;
+}
+} // OceanElement
+ 
+ 
+// Represents a ship, ships must be comparable
+class Ship7 extends OceanElement7 implements Comparable<Ship7>{
+private String name; // Ship's name
+private String classification; // Ship's classification - cruise, cargo, tanker, warship
+private int capacity; // Ship's capacity
+ 
+// Create a ship
+public Ship7 (String classification, int capacity, String name) {
+// The type is in the super class, call the super class constructor to
+//set type.
+// Because we are in the ship class, we know the type is "Ship" so no
+//need to pass in.
+super("Ship7");
+// The instance variables specific to a ship
+this.classification = classification;
+this.capacity = capacity;
+this.name = name;
+}
+ 
+// Returns name of ship
+public String getName() {
+return name;
+}
+//Returns class of ship
+public String getClassification() {
+return classification;
+}
+ 
+// This method override the toString method in the Object class.
+// It creates a printable string to describe the ship
+@Override
+public String toString() {
+return String.format("%-10s\t\t%-10s\t\t%d",
+classification,
+name,
+capacity);
+}
+ 
+@Override // This is where we write the code to compare two Ships.
+// In this assignment, compare two ships based on their class.
+// By writing this method, it is now possible to sort an array of ships
+// by their capacity when calling the Collections.sort method
+public int compareTo(Ship7 otherShip) {
+// Student Note: classification is a private data field for the Ship and
+//because we are inside the Ship class it is perfectly fine to access 
+//capacity directly. Thus, there is no need for a getter.
+//if classifications are the same return 0. if classification is navy return -1.
+//if classification is tanker compared to cargo or cruise then return -1. if
+//classification is cargo compared to cruise then return -1. Otherwise return 1
+if (this.classification.equals(otherShip.classification)) {
+return 0;
+}
+else if (this.classification.equals("Navy")) {
+return -1;
+}
+else if (this.classification.equals("Tanker")) {
+if(otherShip.classification.equals("Cargo") || otherShip.classification.equals("Cruise")) {
+//return higher priority
+return -1;
+}
+else {
+return 1;
+}
+}
+else if (this.classification.equals("Cargo")) {
+if(otherShip.classification.equals("Cruise")) {
+//return higher priority
+return -1;
+}
+else {
+return 1;
+}
+}
+else {
+return 1;
+}
+ 
+}
+} // Ship
+ 
+// Represents land
+class Land7 extends OceanElement7 {
+// Create land
+public Land7 () {
+// Because we are in the land class, we know the elementType is "Land"
+//so no need to pass in
+super("Land");
+}
+}//Land
+ 
+//represents canal
+class Canal{
+//create channel
+private PriorityQueue<Ship7> channel;
+//create transit
+//represents 1st sequence of locks and lakes in canal
+private Queue<Ship7> transitWay1;
+//represents 2nd sequence of locks and lakes in canal
+private Queue<Ship7> transitWay2;
+public Canal() {
+//allocate memory for queues
+channel = new PriorityQueue<>();
+transitWay1 = new LinkedList<>();
+transitWay2 = new LinkedList<>();
+}
+public boolean isChannelEmpty() {
+// returns true when channel queue is empty
+boolean isEmpty = false;
+if(channel.isEmpty()) {
+isEmpty = true;
+}
+return isEmpty;
+}
+public void addShipToChannel(Ship7 ship) {
+//adds (offers) ship to channel queue
+channel.offer(ship);
+}
+public Ship7 removeShipFromChannel() {
+// removes ship from channel queue & returns ship
+Ship7 removedShip = channel.remove();
+return removedShip;
+}
+//methods for transitWays
+//returns true or false
+public boolean isTransit1Empty() {
+//indicates if queue is currently empty
+if(transitWay1.size() == 0) {
+return true;
+}else {
+return false;
+}
+}
+//returns true or false
+public boolean isTransit2Empty() {
+//indicates if queue is currently empty
+if(transitWay2.size() == 0) {
+return true;
+}else {
+return false;
+}
+}
+//parameter is a ship object to add to transit1
+public void addShipToTransit1(Ship7 ship) {
+transitWay1.offer(ship);
+}
+//parameter is a ship object to add to transit2
+public void addShipToTransit2(Ship7 ship) {
+transitWay2.offer(ship);
+}
+//returns a ship object from transit1
+public Ship7 removeShipToTransit1() {
+return transitWay1.remove();
+}
+//returns a ship object from transit2
+public Ship7 removeShipToTransit2() {
+return transitWay2.remove();
+}
+}
+ 
+//represents control center
+class ControlCenter{
+//Contains business logic for moving ships through the canal – in this case from 
+//Atlantic to Pacific.
+public void moveShipsIntoChannel (Ocean7 ocean, Canal canal) {
+int rows = ocean.getNumberRows()-1;
+int cols = ocean.getNumberColumns()-1;
+//starting at the end of the Atlantic ocean remove ship and add it to the canal
+for(int row = rows; row>0;--row) {
+for(int col = cols; col>0;--col) {
+//ship being moved to canal
+OceanElement7 shipBeingMoved = ocean.getElement(row, col);
+if(shipBeingMoved instanceof Ship7) {
+//add ship to channel
+System.out.println("Moved to channel: "+ ((Ship7)shipBeingMoved).toString());
+canal.addShipToChannel((Ship7) ocean.getElement(row, col));
+//once ship is added to channel remove from atlantic
+ocean.removeElement(row, col);
+}
+}
+}
+}
+public void moveShipsIntoTransitWays (Canal canal) {
+//loop will run until canal is empty and all ships are moved to a transit way
+while(!canal.isChannelEmpty()) {
+Ship7 shipBeingMoved = canal.removeShipFromChannel();
+//if ship classification is cruise then add to transitWay1 all other ships are added to
+//transitWay2
+if(shipBeingMoved.getClassification().equalsIgnoreCase("Cruise")) {
+canal.addShipToTransit1(shipBeingMoved);
+System.out.println("Moved into transit way #1: "+ ((Ship7)shipBeingMoved).toString());
+}else {
+canal.addShipToTransit2(shipBeingMoved);
+System.out.println("Moved into transit way #2: "+ ((Ship7)shipBeingMoved).toString());
+}
+}
+}
+public void moveShipsIntoPacificOcean (Ocean7 ocean, int row, int column, Canal canal) {
+//loop will run until until transit ways are empty, adding ships in a round robin order to the
+//pacific ocean grid
+while((!canal.isTransit1Empty())|| (!canal.isTransit2Empty())) {
+ 
+//if the first transit is not empty remove the ship and add to the pacific ocean
+if(!canal.isTransit1Empty()) {
+Ship7 shipBeingMoved = canal.removeShipToTransit1();
+ocean.addElement(row, column, shipBeingMoved);
+System.out.println("Moved into Pacific ocean: "+ ((Ship7)shipBeingMoved).toString());
+//decrement row
+row--;
+}
+//if the second transit is not empty remove the ship and add to the pacific ocean
+if(!canal.isTransit2Empty()) {
+Ship7 shipBeingMoved = canal.removeShipToTransit2();
+ocean.addElement(row, column, shipBeingMoved);
+System.out.println("Moved into Pacific ocean: "+ ((Ship7)shipBeingMoved).toString());
+//decrement row
+row--;
+}
+}
+}
+}
