@@ -1,0 +1,276 @@
+/* This program works with array objects in main 
+ * and an object that contains an array. This is
+ * broken into two tasks. #1 using Student class
+ * to create student objects and store them in an 
+ * array in main. Setters and getters will be used
+ * to get/set information out of the class into 
+ * main and find highest GPA and average from 
+ * students in an array. #2 using Course class to
+ * create two course classes that hold an array of
+ * students as an instance variable in the class.
+ * Course class method will be used to add students
+ * to the array in class. This class will get highest
+ * GPA and averageGPA from the students in course.
+ */
+
+public class MartinHaileyHW08 {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		System.out.println("********************************************\r\n"
+				+ "Part1:  Array of Student Objects in Main  \r\n"
+				+ "********************************************\r\n");
+		//construct a new student from the student class blue print
+		Student student1 = new Student("Firmware Rebels", 3.5);
+		
+		//construct a new student from the student class blue print
+		Student student2 = new Student("Debug Entity", 2.7);
+		
+		//construct a new student from the student class blue print
+		Student student3 = new Student("Zip Demons", 4.0);
+		
+		//construct a new student from the student class blue print
+		Student student4 = new Student("Stack Terror", 3.2);
+
+		//construct a new student from the student class blue print
+	    Student student5 = new Student("Binary Beast", 2.8);
+		
+	    //construct a new student from the student class blue print
+	    Student student6 = new Student("Method Madness", 3.6);
+		
+	    //construct a new student from the student class blue print
+	    Student student7 = new Student("Heap Hellion", 3.9);
+	    
+	    //array that will hold Student objects
+	    Student[] students;
+	    //allocate memory for students
+	    students = new Student[7];
+	    
+	    //add students to array
+	    students[0] = student1;
+	    students[1] = student2;
+	    students[2] = student3;
+	    students[3] = student4;
+	    students[4] = student5;
+	    students[5] = student6;
+	    students[6] = student7;
+	    
+	    
+	    //display students
+	    System.out.println("--------------------------------------------\r\n"
+	    		+ "Student			 GPA\r\n"
+	    		+ "--------------------------------------------\r\n");
+	    
+	    for(int i=0; i< students.length; i++) {
+	    	String name = students[i].getName();
+	    	double GPA = students[i].getGpa();
+	    	System.out.printf(name + "	   	  " +GPA+ "\n");
+	    	 
+	    }
+	    
+	    
+	    //display student with highest gpa
+	    System.out.println("\n--------------------------------------------\r\n"
+	    		+ "Student with highest gpa\r\n"
+	    		+ "--------------------------------------------\r\n");
+	    double highestGPA = 0;
+	    String highestStudent = " ";
+	    
+	    for(int i=0; i< students.length; i++) {
+	    	if(students[i].getGpa() > highestGPA) {
+	    		highestGPA= students[i].getGpa();
+	    		highestStudent = students[i].getName();
+	    	}
+	    }
+	    System.out.println("Student:	" +highestStudent);
+	    System.out.println("GPA:	" +highestGPA+ "\n");
+	    
+	    
+	    
+	    
+	    System.out.println("\n********************************************\r\n"
+	    		+ "Part 2 Array of Students in Course Class     \r\n"
+	    		+ "********************************************\r\n");
+	    
+	   //get number of courses
+	   //int numOfCourses = getNumCourses();
+	    
+	   //construct a new course from the name and max number of students
+	   Course course1 = new Course("CS1150", 6);
+	   
+	   //display course1 name, maxNumStudents and numEnrolled	   
+	   System.out.println("Number of courses available: " +course1.getNumCourses() + "\r\n"
+	   		+ course1.getName()+" is available for registering, max number of students is " +course1.getMaxStudents()+ "\r\n"
+	   		+ "Number of students currently enrolled: " +course1.getNumStudents()+ "\r\n"
+	   		+ "The class is full. Heap Hellion, you have been added to the waitlist\r\n"
+	   		+ "");
+	   
+	   //construct a new course from the name and max number of students
+	   //Course course2 = new Course("CS11502", 6); 
+	   
+	  
+	   //add students to the course
+	   for(int i=0; i< course1.getMaxStudents(); i++) {
+		   course1.addStudent(students[i]); 
+	    }
+	   
+	   /*
+	   course1.addStudent(student1);
+	   course1.addStudent(student2);
+	   course1.addStudent(student3);
+	   course1.addStudent(student4);
+	   course1.addStudent(student5);
+	   course1.addStudent(student6);
+	   course2.addStudent(student7);*/
+	   
+	   
+	   
+	   
+	   //display course information
+	   System.out.println("--------------------------------------------\r\n"
+	   		+ "Course Information \r\n"
+	   		+ "--------------------------------------------\r\n"
+	   		+ "Number of courses: "+ course1.getNumCourses() +"\r\n"
+	   		+ "Course: " +course1.getName() + "\r\n"
+	   		+ "Number of students: " + course1.getMaxStudents() + "\r\n"
+	   		+ "Roster \r\n"
+	   		+ "" );
+	   System.out.println("--------------------------------------------\r\n"
+	   		+ "Student			 GPA\r\n"
+	   		+ "--------------------------------------------\r\n");
+	   
+	   //display students in course array
+	   course1.displayStudents();
+	   
+	   //find average GPA of the students in the course
+	   double averageGPA = course1.getAverageGPA();
+	   System.out.printf("\nCourse Average GPA: %.1f",averageGPA);
+	   
+	   
+	   //find student with highest GPA in course
+	   Student studentGPA = course1.getHightestGPA();
+	   System.out.println("\nHighest GPA in Course: \n" + "Student: " +studentGPA.getName());
+	   System.out.println("GPA: " +studentGPA.getGpa());
+	   
+	   
+	   
+	   
+	}//end of main
+
+}//end of hw8 class
+class Student{
+	private String name;
+	private double gpa;
+	
+	//construct a student with a specified name and gpa
+	public Student(String name, double gpa) {
+		this.name = name;
+		this.gpa = gpa;
+		
+	}
+	
+	//return the name of this student
+	public String getName() {
+		return name;
+	}
+	
+	//return the gpa of this student
+		public double getGpa() {
+			return gpa;
+		}
+	//set a new grade for this student
+		public void setGpa(double gpa) {
+			this.gpa = gpa;
+		}
+		
+		
+}//end of student class
+
+
+
+class Course{
+	private String name;
+	private int maxStudents;
+	private Student[] students;
+	private static int numStudents = 0;
+	
+	public static int numCourses = 0;
+	
+	//construct a course with a specified name maxNum students
+	public Course(String name, int maxStudents) {
+		this.name = name;
+		this.maxStudents = maxStudents;
+		
+		numCourses++;
+		
+		//allocate memory for the students array
+		students = new Student[maxStudents];
+	}
+	
+	//return the name of this course
+	public String getName() {
+		return name;
+	}
+	
+	//return the maxStudents
+	public int getMaxStudents() {
+		return maxStudents;
+	}
+	
+	//return the numStudents
+	public int getNumStudents() {
+		return numStudents;
+	}
+	
+	//return the numCourses
+	public int getNumCourses(){
+		return numCourses;
+	}
+	
+	//set student array to course student array
+	public void addStudent(Student studentToAdd) {
+
+		this.students[numStudents] = studentToAdd;
+		
+		numStudents++;
+	}
+	
+	public Student getHightestGPA() {
+		
+		Student highestGPA = students[0]; 
+	    
+	    for(int i=0; i< students.length; i++) {
+	    	if(students[i].getGpa() > highestGPA.getGpa()) {
+	    		highestGPA = students[i];
+	    	}
+	    }
+		
+		 return highestGPA;
+	}
+	
+	//get average gpa
+	public double getAverageGPA() {
+		double avg = 0;
+		double sum = 0;
+		for (int i = 0; i < students.length; i++) {
+			sum = sum + students[i].getGpa();
+			
+		}
+		avg = sum / students.length;
+		return avg;
+	}
+	
+	
+	//display student array: name and gpa
+	public void displayStudents() {
+		for(int i = 0; i <students.length; i++) {
+			System.out.print(students[i].getName());
+			System.out.print("		  ");
+			System.out.print(students[i].getGpa());
+			System.out.print("\n");
+		}
+			
+		
+	}
+	
+}//end of course class
