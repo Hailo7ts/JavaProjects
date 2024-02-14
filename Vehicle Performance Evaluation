@@ -1,0 +1,360 @@
+/*
+ * Name: Hailey Martin
+ * Description: Analyze a problem to determine test cases for an 
+ * algorithm. Implement solution containing arrays,
+ * objects, and writing a file. This program will 
+ * work with an array of objects and an object that
+ * contains another object. The object array will
+ * contain car objects and each car object will have
+ * a fuel gauge object. Using a loop to simulate 
+ * driving until one car runs out of gas. Determining
+ * which care ran out of gas first.
+ */
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+	
+public class MartinHaileyHW09 {
+
+	public static void main(String[] args) throws IOException{
+		// TODO Auto-generated method stub
+		Car[] vehicles = new Car[5];
+		
+		//call creatCars method to create 5 cars
+		//call printCars method to display cars
+		//to the console
+		createCars(vehicles);
+		System.out.println("Cars at start of simulation");
+		printCars(vehicles);
+		
+		//start of simulations
+		//loop will iterate until on of the cars runs
+		//out of gas
+		
+		
+		//initialize variables and boolean flag
+		boolean hasGas = true;
+		int miles = 0;
+		int milesCount =0;
+		
+		
+		//while loop will run until has gas is equal to false
+		while(hasGas != false) {
+			//loop will update fuel by 10
+			//milesCount will track total miles passed
+			miles =10;
+			milesCount += miles;
+			
+			//for each car in array update the fuel
+			System.out.printf("MilesTraveled = %d\n", milesCount);
+			
+			//loop through the array of car objects and update the fuel by 10
+			for(int i=0; i< vehicles.length; i++) {
+				vehicles[i].updateFuel(miles);
+				
+				}
+			//and determine if car still has fuel
+			//this loop will check the array of car objects
+			//for gas calling the isOutOfGas method.
+			//if method returns true then hasGas is false 
+			//and while loop exits returning hasGas = false
+			//if method returns false then hasGas is true and 
+			//while loop will be exited when i = 4 (the total
+			//length of the array
+			int i =0;
+			while(hasGas == true && i != 4) {
+				
+				if(vehicles[i].isOutOfGas() == true) {
+					hasGas = false;
+				
+				}else {
+					hasGas = true;
+				}
+				//increment count by one
+				i++;	
+				
+			}
+			
+			//every 10 miles display current state of
+			//cars in array
+			printCars(vehicles);
+		}
+			
+		
+		//after isOutOfGas method returns true call
+		//findCarWithNoGas method to return the Car object
+		Car emptyCar = findCarWithNoGas(vehicles);
+		
+		//display the array of cars and the empty car's owner and
+		//the mileCount they ran out of gas at
+		System.out.println("\nCars at end of simulation");
+		printCars(vehicles);
+		System.out.println(emptyCar.getOwner()+ "'s car ran out of gas after "+milesCount+" miles.");
+		
+		
+		//call the writeCarDetailsToFile to add car information to file
+		writeCarDetailsToFile(vehicles);
+		
+	
+		
+	}//end of main method
+	
+	
+	
+	
+	/*************************************
+	 * createCars
+	 * Parameters: Car[] cars
+	 * Return: N/A
+	*************************************/
+	public static void createCars(Car[] cars)  {
+		// Create the cars for the simulation based on the assignment sheet table
+	
+		//create car objects
+		Car car1 = new Car("Shrek", "Toyota Tundra", 15, 6);
+		Car car2 = new Car("Fiona", "Audi Q7", 21, 10);
+		Car car3 = new Car("Donkey", "Jeep CJ5", 14, 5);
+		Car car4 = new Car("Farquaad", "Smart Car", 42, 4);
+		Car car5 = new Car("Dragon", "Chevy Suburban", 12, 30);
+		
+		//assign objects to an array
+		cars[0] = car1;
+		cars[1] = car2;
+		cars[2] = car3;
+		cars[3] = car4;
+		cars[4] = car5;
+	}//end of createCars
+	
+	
+
+ 	/*************************************
+	 * printCars
+	 * Parameters: Car[] cars
+	 * Return: N/A
+	*************************************/
+ 	public static void printCars(Car[] Cars) {
+ 	// Print the details for each car in the array 
+
+ 		//display car owner, brand, fuelEconomy, and FuelGauge's gallons
+		System.out.println("------------------------------------------------------------------\r\n"
+				+ "Owner		Brand			Fuel Economy	Current Gallons     \r\n"
+				+ "------------------------------------------------------------------\r\n");
+		for(int i=0;i<Cars.length;i++) {
+			System.out.printf(Cars[i].getOwner()+"		");
+			System.out.printf(Cars[i].getBrand()+"		");
+			System.out.print(Cars[i].getFuelEconomy()+"		");
+			System.out.printf("%.2f", Cars[i].getFuelGauge().getGallons());
+			System.out.println("\n");
+
+		}
+		
+	}//end of printCars
+	
+	
+ 	
+ 	/*************************************
+	 * findCarWithNoGas
+	 * Parameters: Car[] cars
+	 * Return: carWithNoGas
+	*************************************/
+		public static Car findCarWithNoGas(Car[] cars) {
+			// Finds the car that ran out of gas and returns that car
+			
+			//set carWithNoGas to car[0]
+			Car carWithNoGas = cars[0];
+			
+			//walk through array of cars and compare their fuel gauges to 0
+			//if their fuel gauge equals then set that car to carWithNoGas
+			for(int i=0; i<cars.length; i++) {
+				if(cars[i].getFuelGauge().getGallons() <= 0) {
+					carWithNoGas = cars[i];
+				}
+			}
+			return carWithNoGas;
+		
+		}//end of findCarWithNoGas
+		
+		/*************************************
+		 * writeCarDetailsToFile
+		 * Parameters: Car[] Cars 
+		 * Return: N/A
+		*************************************/
+	public static void writeCarDetailsToFile(Car[] Cars) throws IOException{
+		//Print the details for each car in the cars array to a file
+		
+			// Setup the file reference variable to refer to a text file.
+			// car.txt is the file that will be created on your hard drive.
+			File fileName = new File("car.txt");
+			
+			// Create the file that the cars will be written to. 
+			// This means: connect car.txt on your hard drive to the 
+			// variable resultsFile in the code.
+			PrintWriter resultsFile = new PrintWriter (fileName);
+			
+			// Instead of displaying on the console print to the resultFile. 
+			resultsFile.printf("CarDetails");
+			
+			//walk through the array of cars and print to resultsFile the
+			//owner, brand, FuelEconomy, and FuelGauges's gallons
+			for(int i=0;i<Cars.length;i++) {
+				resultsFile.printf(Cars[i].getOwner()+"		");
+				resultsFile.printf(Cars[i].getBrand()+"		");
+				resultsFile.printf(Cars[i].getFuelEconomy()+"		");
+				resultsFile.printf("%.2f", Cars[i].getFuelGauge().getGallons());
+				resultsFile.printf("\n");
+
+			}
+		
+
+
+		   // Close the file
+			resultsFile.close();
+
+			// This code shows where the file is located on your hard drive. 		
+			// Locate the file in your CS1150 eclipse workspace on your hard drive.
+			// Compare the file contents to what is in the above code.
+			System.out.println("\nFind the file here " + fileName.getAbsolutePath());
+			System.out.println();
+			
+
+	}
+
+
+}//end of HW09 class
+
+/*************************************
+ * Car class
+*************************************/
+class Car{
+	private String owner = " ";
+	private String brand = " ";
+	private double fuelEconomy;
+	private FuelGauge fuelGauge;
+	
+	
+	/*************************************
+	 * Car constructor
+	 * Parameters: String owner, String brand,
+	 double fuelEconomy, double gallons
+	 * Return: N/A
+	*************************************/
+	public Car(String owner, String brand,
+			double fuelEconomy, double gallons) {
+		this.owner = owner;
+		this.brand = brand;
+		this.fuelEconomy = fuelEconomy;
+		
+		//allocate memory for a fuel gauge object
+		//fuel gauge's number of gallons set to 
+		//incoming value of gallons
+		fuelGauge = new FuelGauge(gallons);
+		
+	}
+	
+	/*************************************
+	 * getOwner
+	 * Parameters: N/A
+	 * Return: owner
+	*************************************/
+	public String getOwner() {
+		return owner;
+	}
+	
+	/*************************************
+	 * getBrand
+	 * Parameters: N/A
+	 * Return: brand
+	*************************************/
+	public String getBrand() {
+		return brand;
+	}
+	
+	/*************************************
+	 * getFuelEconomy
+	 * Parameters: N/A
+	 * Return: fuelEconomy
+	*************************************/
+	public double getFuelEconomy() {
+		return fuelEconomy;
+	}
+	
+	/*************************************
+	 * getFuelGauge
+	 * Parameters: N/A
+	 * Return: fuelGauge
+	*************************************/
+	public FuelGauge getFuelGauge() {
+		return fuelGauge;
+	}
+	
+	/*************************************
+	 * updateFuel
+	 * Parameters: double milesTraveled
+	 * Return: N/A
+	*************************************/
+	public void updateFuel(double milesTraveled) {
+		//updates the number of gallons based on the 
+		//number of miles traveled
+		double fuel = fuelGauge.getGallons();
+		fuel -= (milesTraveled / fuelEconomy);
+		
+		fuelGauge.decrementGallons(milesTraveled / fuelEconomy);
+	}
+	
+	/*************************************
+	 * isOutOfGas
+	 * Parameters: N/A
+	 * Return: true or false
+	*************************************/
+	public boolean isOutOfGas () {
+		//boolean outOfGas;
+		if(fuelGauge.getGallons() <= 0 ) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+}//end of cars class
+
+
+//Class that represents the fuel gauge in a car
+class FuelGauge{
+	
+	private double gallons;
+	
+	/*************************************
+	 * FuelGauge
+	 * Parameters: double gallons
+	 * Return: N/A
+	*************************************/
+	public FuelGauge(double gallons) {
+		this.gallons = gallons;
+	}
+	
+	/*************************************
+	 * getGallons
+	 * Parameters: N/A
+	 * Return: gallons
+	*************************************/
+	public double getGallons() {
+		return gallons;
+	}
+	
+	/*************************************
+	 * decrementGallons
+	 * Parameters: double gallonsUsed
+	 * Return: N/A
+	*************************************/
+	public void decrementGallons(double gallonsUsed) {
+				
+		if(gallonsUsed > gallons) {
+			gallons =0;
+		}else {
+			gallons -= gallonsUsed;
+		}
+	}
+	
+	
+}
