@@ -8,9 +8,6 @@ import java.util.Scanner;
  
 /*
 * Hailey Martin
-* CS1450 Section 001 T/R
-* Assignment #7
-* Due Date: 03/23/23
 * Description:
 * This program will contain two oceans, the Atlantic and
 * Pacific, and one canal that the ships will use to move
