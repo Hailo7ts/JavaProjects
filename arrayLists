@@ -7,9 +7,6 @@ import java.util.Collections;
 
 /*
  * Hailey Martin
- * CS1450 Section 001 T/R
- * Assignment #4
- * Due Date: 02/23/23
  * Description:
  * This program will create a model of the ocean in the
  * form of a grid of elements which are either ships 
