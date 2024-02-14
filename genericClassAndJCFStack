@@ -7,9 +7,6 @@ import java.util.*;
 
 /*
  * Hailey Martin
- * CS1450 Section 001 T/R
- * Assignment #5
- * Due Date: 03/02/23
  * Description:
  * This program will implement and use a generic class and
  * generic methods. It will also use JCF stack to place 
